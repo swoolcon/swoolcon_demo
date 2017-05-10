@@ -41,14 +41,14 @@ class Web extends Application
     protected function registerProviders()
     {
         //注入服务,暂时不用，留以后用
-        $this->initializeServiceProviders([
+        /*$this->initializeServiceProviders([
             ServiceProvider\EventManagerServiceProvider::class,
             ServiceProvider\ConfigServiceProvider::class,
             ServiceProvider\CryptServiceProvider::class,
             ServiceProvider\DatabaseServiceProvider::class,
             ServiceProvider\DataCacheServiceProvider::class,
             ServiceProvider\TestTestServiceProvider::class
-        ], $this->diPreLoad);
+        ], $this->diPreLoad);*/
 
 
     }
@@ -60,12 +60,6 @@ class Web extends Application
      */
     public function register()
     {
-        //di
-        /*$di = $this->getDi();
-        if (!$di || !($di instanceof DiInterface)) {
-            $di = new Di();
-            $this->setDI($di);
-        }*/
 
         $di = new Di();
         $this->setDI($di);
@@ -79,7 +73,7 @@ class Web extends Application
         $di->setShared('swooleResponse', $this->swooleResponse);
 
         //这一部分放到config 文件夹里面
-        $this->initializeServiceProviders([
+        /*$this->initializeServiceProviders([
             ServiceProvider\EventManagerServiceProvider::class,
             ServiceProvider\ConfigServiceProvider::class,
             ServiceProvider\UrlResolverServiceProvider::class,
@@ -108,11 +102,16 @@ class Web extends Application
             ServiceProvider\SwooleRequestServiceProvider::class,
             ServiceProvider\SwooleResponseServiceProvider::class,
             ServiceProvider\DispatcherWebServiceProvider::class,
-            ServiceProvider\RoutingWebServiceProvider::class,
+            //ServiceProvider\RoutingWebServiceProvider::class,
+            ServiceProvider\RouterServiceProvider::class,
+
             ServiceProvider\SwooleSessionServiceProvider::class,
             ServiceProvider\SwooleWebDatabaseServiceProvider::class,
             ServiceProvider\SwooleStaticPropServiceProvider::class
-        ], $di);
+        ], $di);*/
+
+        $this->initializeServiceProviders($this->getServiceProviderList(),$di);
+
 
         return $this;
     }

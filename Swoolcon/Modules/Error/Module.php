@@ -42,15 +42,7 @@ class Module extends BaseModule
      */
     public function registerAutoloaders(DiInterface $di = null)
     {
-        $loader = new Loader();
 
-        $namespaces = [
-            $this->getHandlersNamespace() => __DIR__ . '/Controllers/',
-        ];
-
-        $loader->registerNamespaces($namespaces, true);
-
-        $loader->register();
     }
 
     /**

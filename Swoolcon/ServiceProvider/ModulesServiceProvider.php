@@ -11,10 +11,8 @@ use Swoolcon\ServiceProvider;
 use Phalcon\Cli\Console;
 use Phalcon\Registry;
 
-use App\Modules\Frontend\Module as FrontendModule;
+use App\WebModules\Frontend\Module as FrontendModule;
 use Swoolcon\Modules\Error\Module as DefaultErrorModule;
-
-
 
 
 class ModulesServiceProvider extends ServiceProvider
@@ -23,27 +21,29 @@ class ModulesServiceProvider extends ServiceProvider
 
     protected $modules = [];
 
-    public function configure()
+    protected $moduleConfig = 'ModuleWeb.php';
+
+
+    protected function modulesDefault()
     {
+        return [
 
-
-        $app = [
-
-            'frontend'  => [
-                'className' => FrontendModule::class,
-                'path'      => modules_path('Frontend/Module.php'),
-                'router'    => modules_path('Frontend/Config/Routing.php'),
-            ],
-
-            'Error'  => [
+            'Error' => [
                 'className' => DefaultErrorModule::class,
                 'path'      => app_path('Swoolcon/Modules/Error/Module.php'),
                 'router'    => app_path('Swoolcon/Modules/Error/Config/Routing.php'),
             ],
 
         ];
+    }
 
-        $this->modules = array_merge($app, $this->modules);
+    public function configure()
+    {
+        //default
+        $moduleDefault = $this->modulesDefault();
+        $modules = $this->di->get('bootstrap')->getModules();
+
+        $this->modules = array_merge($moduleDefault, $this->modules,$modules);
     }
 
     public function register()
@@ -81,16 +81,21 @@ class ModulesServiceProvider extends ServiceProvider
                 return $moduleBootstrap;
             };
 
-
             $di->setShared($module['className'], $modules[$key]);
         }
 
         //在应用中注册模块
 
+        $this->registerModules($modules);
+
+    }
+
+    protected function registerModules($modules)
+    {
+        $di = $this->di;
         /** @var \Phalcon\Mvc\Application $application */
         $application = $di->getShared('bootstrap')->getApplication();
+
         $application->registerModules($modules);
-
-
     }
 }

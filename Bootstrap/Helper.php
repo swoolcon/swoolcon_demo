@@ -71,16 +71,29 @@ if (!function_exists('cache_path')) {
     }
 }
 
-if (!function_exists('modules_path')) {
+if (!function_exists('modules_web_path')) {
     /**
      * Get the modules path.
      *
      * @param  string $path
      * @return string
      */
-    function modules_path($path = '')
+    function modules_web_path($path = '')
     {
-        return app_path('App' . DIRECTORY_SEPARATOR . 'Modules') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        return app_path('App' . DIRECTORY_SEPARATOR . 'WebModules') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+}
+
+if (!function_exists('modules_cli_path')) {
+    /**
+     * Get the modules path.
+     *
+     * @param  string $path
+     * @return string
+     */
+    function modules_cli_path($path = '')
+    {
+        return app_path('App' . DIRECTORY_SEPARATOR . 'CliModules') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 }
 
@@ -89,5 +102,47 @@ if (!function_exists('content_modules_path')) {
     function content_modules_path($path = '')
     {
         return content_path('Modules') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+}
+
+
+if (!function_exists('value')) {
+    /**
+     * Return the default value of the given value.
+     *
+     * @param  mixed $value
+     * @return mixed
+     */
+    function value($value)
+    {
+        return $value instanceof Closure ? $value() : $value;
+    }
+}
+
+if (!function_exists('env')) {
+    /**
+     * Gets the value of an environment variable.
+     *
+     * @param  string $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    function env($key, $default = null)
+    {
+        $value = getenv($key);
+        if ($value === false) {
+            return value($default);
+        }
+        switch (strtolower($value)) {
+            case 'true':
+                return true;
+            case 'false':
+                return false;
+            case 'empty':
+                return '';
+            case 'null':
+                return null;
+        }
+        return $value;
     }
 }
